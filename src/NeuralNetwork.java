@@ -17,6 +17,7 @@ public class NeuralNetwork {
     private SparkSession sparkSession;
     private MultilayerPerceptronClassificationModel model;
 
+    @Override
     public void init() {
         initSparkSession();
         if (model == null) {
@@ -25,7 +26,7 @@ public class NeuralNetwork {
             LOGGER.info("Loading from saved model is done");
         }
     }
-
+    @Override
     public void train(Integer trainData, Integer testFieldValue) {
 
         initSparkSession();
@@ -70,6 +71,7 @@ public class NeuralNetwork {
         sparkSession.sparkContext().setCheckpointDir("checkPoint");
     }
 
+    @Override
     public LabeledImage predict(LabeledImage labeledImage) {
         double predict = model.predict(labeledImage.getFeatures());
         labeledImage.setLabel(predict);
