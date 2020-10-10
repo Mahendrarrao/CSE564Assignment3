@@ -5,12 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.JComboBox;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.concurrent.Executors;
 
 public class UI {
 
@@ -25,25 +26,27 @@ public class UI {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
-    private SpinnerNumberModel modelTrainSize;
-    private JSpinner trainField;
-    private int TRAIN_SIZE = 30000;
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
-    private int TEST_SIZE = 10000;
-    private SpinnerNumberModel modelTestSize;
-    private JSpinner testField;
     private JPanel resultPanel;
+    @SuppressWarnings("rawtypes")
+	private JComboBox algoList;
 
+    private String[] algorithms = {"Convolutional Neural Network", 
+    		"Neural Network"};
+    
+    private static String cnnAlgo = "Convolutional Neural Network";
+    private static String nnAlgo = "Neural Network";
+    private static String selectedAlgo = "";
+    
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
+        UIManager.put("ComboBox.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         neuralNetwork.init();
         convolutionalNeuralNetwork.init();
     }
 
     public void initUI() {
-        // create main frame
         mainFrame = createMainFrame();
 
         mainPanel = new JPanel();
@@ -52,64 +55,13 @@ public class UI {
         addTopPanel();
 
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
-        addActionPanel();
+        
         addDrawAreaAndPredictionArea();
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
-
-        addSignature();
 
         mainFrame.add(mainPanel, BorderLayout.CENTER);
         mainFrame.setVisible(true);
 
-    }
-
-    private void addActionPanel() {
-        JButton recognize = new JButton("Recognize Digit With Simple NN");
-        JButton recognizeCNN = new JButton("Recognize Digit With Conv NN");
-        recognize.addActionListener(e -> {
-            Image drawImage = drawArea.getImage();
-            BufferedImage sbi = toBufferedImage(drawImage);
-            Image scaled = scale(sbi);
-            BufferedImage scaledBuffered = toBufferedImage(scaled);
-            double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
-            LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
-            LabeledImage predict = neuralNetwork.predict(labeledImage);
-            JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
-            predictNumber.setForeground(Color.RED);
-            predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
-            resultPanel.removeAll();
-            resultPanel.add(predictNumber);
-            resultPanel.updateUI();
-
-        });
-
-        recognizeCNN.addActionListener(e -> {
-            Image drawImage = drawArea.getImage();
-            BufferedImage sbi = toBufferedImage(drawImage);
-            Image scaled = scale(sbi);
-            BufferedImage scaledBuffered = toBufferedImage(scaled);
-            double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
-            LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
-            int predict = convolutionalNeuralNetwork.predict(labeledImage);
-            JLabel predictNumber = new JLabel("" + predict);
-            predictNumber.setForeground(Color.RED);
-            predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
-            resultPanel.removeAll();
-            resultPanel.add(predictNumber);
-            resultPanel.updateUI();
-
-        });
-        JButton clear = new JButton("Clear");
-        clear.addActionListener(e -> {
-            drawArea.setImage(null);
-            drawArea.repaint();
-            drawAndDigitPredictionPanel.updateUI();
-        });
-        JPanel actionPanel = new JPanel(new GridLayout(8, 1));
-        actionPanel.add(recognizeCNN);
-        actionPanel.add(recognize);
-        actionPanel.add(clear);
-        drawAndDigitPredictionPanel.add(actionPanel);
     }
 
     private void addDrawAreaAndPredictionArea() {
@@ -119,75 +71,73 @@ public class UI {
         drawAndDigitPredictionPanel.add(drawArea);
         resultPanel = new JPanel();
         resultPanel.setLayout(new GridBagLayout());
+        resultPanel.setBackground(Color.lightGray);
         drawAndDigitPredictionPanel.add(resultPanel);
     }
 
-    private void addTopPanel() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private void addTopPanel() {
         JPanel topPanel = new JPanel(new FlowLayout());
-        JButton trainNN = new JButton("Train NN");
-        trainNN.addActionListener(e -> {
-
-            int i = JOptionPane.showConfirmDialog(mainFrame, "Are you sure this may take some time to train?");
-
-            if (i == JOptionPane.OK_OPTION) {
-                ProgressBar progressBar = new ProgressBar(mainFrame);
-                SwingUtilities.invokeLater(() -> progressBar.showProgressBar("Training may take one or two minutes..."));
-                Executors.newCachedThreadPool().submit(() -> {
-                    try {
-                        LOGGER.info("Start of train Neural Network");
-                        neuralNetwork.train((Integer) trainField.getValue(), (Integer) testField.getValue());
-                        LOGGER.info("End of train Neural Network");
-                    } finally {
-                        progressBar.setVisible(false);
-                    }
-                });
-            }
+        
+        algoList = new JComboBox(algorithms);
+        
+        algoList.addActionListener(new ActionListener() { 
+    	    public void actionPerformed(ActionEvent e) {
+    	    	resultPanel.removeAll();
+                drawArea.repaint();
+                drawAndDigitPredictionPanel.updateUI();
+    	    }
+        });
+        
+        JButton runAlgo = new JButton("Run");
+        
+        runAlgo.addActionListener(e -> {
+        	selectedAlgo = (String) (algoList).getSelectedItem();
+        	if (selectedAlgo.equals(cnnAlgo)) {
+        		Image drawImage = drawArea.getImage();
+                BufferedImage sbi = toBufferedImage(drawImage);
+                Image scaled = scale(sbi);
+                BufferedImage scaledBuffered = toBufferedImage(scaled);
+                double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
+                LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
+                LabeledImage predict = neuralNetwork.predict(labeledImage);
+                JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
+                predictNumber.setForeground(Color.RED);
+                predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
+                resultPanel.removeAll();
+                resultPanel.add(predictNumber);
+                resultPanel.updateUI();
+        	} else if  (selectedAlgo.equals(nnAlgo)) {
+        		Image drawImage = drawArea.getImage();
+                BufferedImage sbi = toBufferedImage(drawImage);
+                Image scaled = scale(sbi);
+                BufferedImage scaledBuffered = toBufferedImage(scaled);
+                double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
+                LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
+                int predict = convolutionalNeuralNetwork.predict(labeledImage);
+                JLabel predictNumber = new JLabel("" + predict);
+                predictNumber.setForeground(Color.RED);
+                predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
+                resultPanel.removeAll();
+                resultPanel.add(predictNumber);
+                resultPanel.updateUI();
+        	}
+        });
+        
+        JButton clear = new JButton("Clear");
+        clear.addActionListener(e -> {
+        	resultPanel.removeAll();
+            drawArea.setImage(null);
+            drawArea.repaint();
+            drawAndDigitPredictionPanel.updateUI();
         });
 
-        JButton trainCNN = new JButton("Train Convolutional NN");
-        trainCNN.addActionListener(e -> {
-
-            int i = JOptionPane.showConfirmDialog(mainFrame, "Are you sure, training requires >10GB memory and more than 1 hour?");
-
-            if (i == JOptionPane.OK_OPTION) {
-                ProgressBar progressBar = new ProgressBar(mainFrame);
-                SwingUtilities.invokeLater(() -> progressBar.showProgressBar("Training may take a while..."));
-                Executors.newCachedThreadPool().submit(() -> {
-                    try {
-                        LOGGER.info("Start of train Convolutional Neural Network");
-                        convolutionalNeuralNetwork.train((Integer) trainField.getValue(), (Integer) testField.getValue());
-                        LOGGER.info("End of train Convolutional Neural Network");
-                    } catch (IOException e1) {
-                        LOGGER.error("CNN not trained " + e1);
-                        throw new RuntimeException(e1);
-                    } finally {
-                        progressBar.setVisible(false);
-                    }
-                });
-            }
-        });
-
-        topPanel.add(trainCNN);
-        topPanel.add(trainNN);
-        JLabel tL = new JLabel("Training Data");
-        tL.setFont(sansSerifBold);
-        topPanel.add(tL);
-        modelTrainSize = new SpinnerNumberModel(TRAIN_SIZE, 10000, 60000, 1000);
-        trainField = new JSpinner(modelTrainSize);
-        trainField.setFont(sansSerifBold);
-        topPanel.add(trainField);
-
-        JLabel ttL = new JLabel("Test Data");
-        ttL.setFont(sansSerifBold);
-        topPanel.add(ttL);
-        modelTestSize = new SpinnerNumberModel(TEST_SIZE, 1000, 10000, 500);
-        testField = new JSpinner(modelTestSize);
-        testField.setFont(sansSerifBold);
-        topPanel.add(testField);
+        topPanel.add(algoList);
+        topPanel.add(runAlgo);
+        topPanel.add(clear);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
-
 
     private static BufferedImage scale(BufferedImage imageToScale) {
         ResampleOp resizeOp = new ResampleOp(28, 28);
@@ -209,7 +159,6 @@ public class UI {
         return bimage;
     }
 
-
     private static double[] transformImageToOneDimensionalVector(BufferedImage img) {
 
         double[] imageGray = new double[28 * 28];
@@ -230,7 +179,6 @@ public class UI {
         return imageGray;
     }
 
-
     private JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Digit Recognizer");
@@ -247,13 +195,6 @@ public class UI {
         mainFrame.setIconImage(imageIcon.getImage());
 
         return mainFrame;
-    }
-
-    private void addSignature() {
-        JLabel signature = new JLabel("ramok.tech", JLabel.HORIZONTAL);
-        signature.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        signature.setForeground(Color.BLUE);
-        mainPanel.add(signature, BorderLayout.SOUTH);
     }
 
 }
