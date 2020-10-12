@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class TemplateNetwork {
+public class StrategyNetwork {
   public void init();
   public int predict(LabeledImage labeledImage);
   public void train(Integer trainDataSize, Integer testDataSize);
