@@ -117,7 +117,7 @@ public class View implements ViewPlan {
                 BufferedImage scaledBuffered = toBufferedImage(scaled);
                 double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
                 LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
-                LabeledImage predict = neuralNetwork.predict(labeledImage);
+                LabeledImage predict = neuralNetwork.predict(labeledImage,0);
                 JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
                 predictNumber.setForeground(Color.RED);
                 predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));

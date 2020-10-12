@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by agibsonccc on 9/16/15.
  */
-public class ConvolutionalNeuralNetwork {
+public class ConvolutionalNeuralNetwork extends StrategyNetwork{
 
     private static final String OUT_DIR = "resources/cnnCurrentTrainingModels";
     private static final String TRAINED_MODEL_FILE = "resources/cnnTrainedModels/bestModel.bin";
@@ -40,10 +40,12 @@ public class ConvolutionalNeuralNetwork {
     private static final Logger LOG = LoggerFactory.getLogger(ConvolutionalNeuralNetwork.class);
     private MultiLayerNetwork preTrainedModel;
 
+    @Override
     public void init() throws IOException {
         preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(TRAINED_MODEL_FILE));
     }
 
+    @Override
     public int predict(LabeledImage labeledImage) {
         double[] pixels = labeledImage.getPixels();
         for (int i = 0; i < pixels.length; i++) {
@@ -54,6 +56,7 @@ public class ConvolutionalNeuralNetwork {
         return predict[0];
     }
 
+    @Override
     public void train(Integer trainDataSize, Integer testDataSize) throws IOException {
         int nChannels = 1; // Number of input channels
         int outputNum = 10; // The number of possible outcomes
@@ -124,6 +127,11 @@ public class ConvolutionalNeuralNetwork {
         LOG.info("Total epochs: " + result.getTotalEpochs());
         LOG.info("Best epoch number: " + result.getBestModelEpoch());
         LOG.info("Score at best epoch: " + result.getBestModelScore());
+    }
+
+    @Override
+    public LabeledImage predict(LabeledImage labeledImage, int dummy){
+      return labeledImage;
     }
 
     public static void main(String[] args) throws Exception {

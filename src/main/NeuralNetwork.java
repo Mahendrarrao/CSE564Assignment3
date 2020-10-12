@@ -12,13 +12,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class NeuralNetwork {
+public class NeuralNetwork extends StrategyNetwork {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(NeuralNetwork.class);
 
     private SparkSession sparkSession;
     private MultilayerPerceptronClassificationModel model;
 
+    @Override
     public void init() {
         initSparkSession();
         if (model == null) {
@@ -27,8 +28,8 @@ public class NeuralNetwork {
             LOGGER.info("Loading from saved model is done");
         }
     }
-
-    public void train(Integer trainData, Integer testFieldValue) {
+    @Override
+    public void train(Integer trainData, Integer testFieldValue) throws IOException {
 
         initSparkSession();
 
@@ -72,9 +73,15 @@ public class NeuralNetwork {
         sparkSession.sparkContext().setCheckpointDir("checkPoint");
     }
 
-    public LabeledImage predict(LabeledImage labeledImage) {
+    @Override
+    public LabeledImage predict(LabeledImage labeledImage, int dummy) {
         double predict = model.predict(labeledImage.getFeatures());
         labeledImage.setLabel(predict);
         return labeledImage;
     }
+	@Override
+	public int predict(LabeledImage labeledImage) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
