@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class StrategyNetwork {
-  public void init();
-  public int predict(LabeledImage labeledImage);
-  public void train(Integer trainDataSize, Integer testDataSize);
+  public abstract void init();
+  public abstract int predict(LabeledImage labeledImage);
+  public abstract void train(Integer trainDataSize, Integer testDataSize);
 }
