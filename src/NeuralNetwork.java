@@ -77,4 +77,9 @@ public class NeuralNetwork extends StrategyNetwork {
         labeledImage.setLabel(predict);
         return labeledImage;
     }
+
+    @Override
+    public int predict(LabeledImage labeledImage) {
+      return 0;
+    }
 }
