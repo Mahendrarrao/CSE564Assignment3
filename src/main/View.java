@@ -1,70 +1,86 @@
-import com.mortennobel.imagescaling.ResampleFilters;
-import com.mortennobel.imagescaling.ResampleOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package main;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.JComboBox;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
-public class UI {
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.JComboBox;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(UI.class);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    private static final int FRAME_WIDTH = 1200;
+import com.mortennobel.imagescaling.ResampleFilters;
+import com.mortennobel.imagescaling.ResampleOp;
+
+public class View implements ViewPlan {
+	private final static Logger LOGGER = LoggerFactory.getLogger(View.class);
+	
+	private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 628;
     private final NeuralNetwork neuralNetwork = new NeuralNetwork();
     private final ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
 
     private DrawArea drawArea;
     private JFrame mainFrame;
-    private JPanel mainPanel;
+    public JFrame getMainFrame() {
+		return mainFrame;
+	}
+
+	public JPanel getMainPanel() {
+		return mainPanel;
+	}
+
+	private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
-    @SuppressWarnings("rawtypes")
-	private JComboBox algoList;
-
+    private JComboBox algoList;
     private String[] algorithms = {"Convolutional Neural Network", 
-    		"Neural Network"};
-    
+	"Neural Network"};
+
     private static String cnnAlgo = "Convolutional Neural Network";
     private static String nnAlgo = "Neural Network";
     private static String selectedAlgo = "";
     
-    public UI() throws Exception {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    public View() throws Exception {
+    	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         UIManager.put("ComboBox.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         neuralNetwork.init();
         convolutionalNeuralNetwork.init();
+        createPanels();
     }
-
-    public void initUI() {
-        mainFrame = createMainFrame();
+    
+    private void createPanels() {
+    	mainFrame = createMainFrame();
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-
-        addTopPanel();
-
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
-        
-        addDrawAreaAndPredictionArea();
-        mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
-
-        mainFrame.add(mainPanel, BorderLayout.CENTER);
-        mainFrame.setVisible(true);
-
     }
-
-    private void addDrawAreaAndPredictionArea() {
+    
+    @Override
+    public void addDrawAreaAndPredictionArea() {
 
         drawArea = new DrawArea();
 
@@ -73,11 +89,12 @@ public class UI {
         resultPanel.setLayout(new GridBagLayout());
         resultPanel.setBackground(Color.lightGray);
         drawAndDigitPredictionPanel.add(resultPanel);
+        mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
     }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	private void addTopPanel() {
-        JPanel topPanel = new JPanel(new FlowLayout());
+    
+    @Override
+    public void addTopPanel() {
+    	JPanel topPanel = new JPanel(new FlowLayout());
         
         algoList = new JComboBox(algorithms);
         
@@ -159,6 +176,7 @@ public class UI {
         return bimage;
     }
 
+
     private static double[] transformImageToOneDimensionalVector(BufferedImage img) {
 
         double[] imageGray = new double[28 * 28];
@@ -178,8 +196,9 @@ public class UI {
         }
         return imageGray;
     }
-
-    private JFrame createMainFrame() {
+    
+    @Override
+    public JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Digit Recognizer");
         mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
