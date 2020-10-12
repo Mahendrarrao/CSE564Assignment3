@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class NeuralNetwork {
+public class NeuralNetwork extends TemplateNetwork {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(NeuralNetwork.class);
 
