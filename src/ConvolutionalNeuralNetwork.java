@@ -127,6 +127,11 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
         LOG.info("Score at best epoch: " + result.getBestModelScore());
     }
 
+    @Override
+    public LabeledImage predict(LabeledImage labeledImage, int dummy){
+      return labeledImage;
+    }
+
     public static void main(String[] args) throws Exception {
         new ConvolutionalNeuralNetwork().train(60000, 1000);
     }

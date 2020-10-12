@@ -27,7 +27,7 @@ public class NeuralNetwork extends StrategyNetwork {
         }
     }
     @Override
-    public void train(Integer trainData, Integer testFieldValue) {
+    public void train(Integer trainData, Integer testFieldValue) throws IOException {
 
         initSparkSession();
 
@@ -72,7 +72,7 @@ public class NeuralNetwork extends StrategyNetwork {
     }
 
     @Override
-    public LabeledImage predict(LabeledImage labeledImage) {
+    public LabeledImage predict(LabeledImage labeledImage, int dummy) {
         double predict = model.predict(labeledImage.getFeatures());
         labeledImage.setLabel(predict);
         return labeledImage;
