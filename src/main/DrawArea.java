@@ -1,3 +1,5 @@
+package main;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,7 +26,7 @@ public class DrawArea extends JComponent {
         setDoubleBuffered(false);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Please draw a digit",
-                TitledBorder.LEFT,
+                TitledBorder.CENTER,
                 TitledBorder.TOP, sansSerifBold, Color.BLUE));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -69,7 +71,7 @@ public class DrawArea extends JComponent {
     }
 
     public void clear() {
-        g2.setPaint(Color.white);
+        g2.setPaint(Color.LIGHT_GRAY);
         // draw white on entire draw area to clear
         g2.fillRect(0, 0, getSize().width, getSize().height);
         g2.setPaint(Color.black);

@@ -1,5 +1,9 @@
+package main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import main.ProgressBar;
+
 
 import javax.swing.*;
 import java.io.File;
@@ -17,24 +21,36 @@ public class Run {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Run.class);
     private static JFrame mainFrame = new JFrame();
-
-    public static void main(String[] args) throws Exception {
-
-        LOGGER.info("Application is starting ... ");
-
-        setHadoopHomeEnvironmentVariable();
-        ProgressBar progressBar = new ProgressBar(mainFrame, true);
-        progressBar.showProgressBar("Collecting data this make take several seconds!");
-        UI ui = new UI();
-        Executors.newCachedThreadPool().submit(()->{
-            try {
-                ui.initUI();
-            } finally {
-                progressBar.setVisible(false);
-                mainFrame.dispose();
-            }
-        });
+    
+    public static void main(String[] args) throws Exception{
+    	LOGGER.info("Application is starting ... ");
+    	setHadoopHomeEnvironmentVariable();
+    	ProgressBar progressBar = new ProgressBar(mainFrame, true);
+    	progressBar.showProgressBar("Collecting data this make take several seconds!");
+    	UIBuilder builder = new NewUIBuilder();
+    	UIDirector director = new UIDirector(builder);
+    	Executors.newCachedThreadPool().submit(()->{ try {
+    		
+    	director.makeUI();
+    	} 
+    	finally { progressBar.setVisible(false); mainFrame.dispose();
+    	} });
+    	
+    	
     }
+
+	/*
+	 * public static void main(String[] args) throws Exception {
+	 * 
+	 * LOGGER.info("Application is starting ... ");
+	 * 
+	 * setHadoopHomeEnvironmentVariable(); ProgressBar progressBar = new
+	 * ProgressBar(mainFrame, true);
+	 * progressBar.showProgressBar("Collecting data this make take several seconds!"
+	 * ); UI ui = new UI(); Executors.newCachedThreadPool().submit(()->{ try {
+	 * ui.initUI(); } finally { progressBar.setVisible(false); mainFrame.dispose();
+	 * } }); }
+	 */
 
 //    private static void setHadoopHomeEnvironmentVariable() throws Exception {
 //        HashMap<String, String> hadoopEnvSetUp = new HashMap<>();

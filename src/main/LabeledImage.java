@@ -1,3 +1,5 @@
+package main;
+
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.linalg.Vectors;
 
