@@ -24,7 +24,7 @@ public class NeuralNetwork extends StrategyNetwork {
         initSparkSession();
         if (model == null) {
             LOGGER.info("Loading the Neural Network from saved model ... ");
-            model = MultilayerPerceptronClassificationModel.load("resources/nnTrainedModels/ModelWith60000");
+            model = MultilayerPerceptronClassificationModel.load(consts.nnTrainedModelsPath);
             LOGGER.info("Loading from saved model is done");
         }
     }
