@@ -11,6 +11,8 @@ public final class consts {
   public static String comboxFont = "ComboBox.font";
   public static String fontType = "SansSerif";
   public static String dialog = "Dialog";
+  public static String filePath = "resources/winutils-master/hadoop-2.8.1";
+  public static String hadoopHome = "HADOOP_HOME";
 
   private consts(){
     //this prevents even the native class from
