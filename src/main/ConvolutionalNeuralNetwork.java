@@ -34,15 +34,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConvolutionalNeuralNetwork extends StrategyNetwork{
 
-    private static final String OUT_DIR = "resources/cnnCurrentTrainingModels";
-    private static final String TRAINED_MODEL_FILE = "resources/cnnTrainedModels/bestModel.bin";
-
     private static final Logger LOG = LoggerFactory.getLogger(ConvolutionalNeuralNetwork.class);
     private MultiLayerNetwork preTrainedModel;
 
     @Override
     public void init() throws IOException {
-        preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(TRAINED_MODEL_FILE));
+        preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(consts.TRAINED_MODEL_FILE));
     }
 
     @Override
@@ -115,7 +112,7 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
                 .scoreCalculator(new AccuracyCalculator(
                         new MnistDataSetIterator(testDataSize, testDataSize, false, false, true, 12345)))
                 .evaluateEveryNEpochs(1)
-                .modelSaver(new LocalFileModelSaver(OUT_DIR))
+                .modelSaver(new LocalFileModelSaver(consts.consts.OUT_DIR))
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, mnistTrain);

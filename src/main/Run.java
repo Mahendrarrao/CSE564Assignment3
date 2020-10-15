@@ -55,7 +55,7 @@ public class Run {
 //    private static void setHadoopHomeEnvironmentVariable() throws Exception {
 //        HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
 //        hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
-//        Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+//        Class<?> processEnvironmentClass = Class.forName(consts.javaPath);
 //        Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
 //        theEnvironmentField.setAccessible(true);
 //        Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
@@ -72,7 +72,7 @@ public class Run {
     	HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
     	hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
     	try {
-    		Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+    		Class<?> processEnvironmentClass = Class.forName(consts.javaPath);
     		Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
     		theEnvironmentField.setAccessible(true);
     		Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
@@ -88,7 +88,7 @@ public class Run {
     		Class[] classes = Collections.class.getDeclaredClasses();
     		Map<String, String> env = System.getenv();
     		for (Class cl : classes) {
-    			if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+    			if (consts.unmodifiableMap.equals(cl.getName())) {
     				Field field = cl.getDeclaredField("m");
     				field.setAccessible(true);
     				Object obj = field.get(env);
