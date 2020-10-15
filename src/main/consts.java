@@ -14,7 +14,7 @@ public final class consts {
   public static String filePath = "resources/winutils-master/hadoop-2.8.1";
   public static String hadoopHome = "HADOOP_HOME";
   public static String javaPath = "java.lang.ProcessEnvironment";
-  public static String consts.unmodifiableMap = "java.util.Collections$UnmodifiableMap";
+  public static String unmodifiableMap = "java.util.Collections$UnmodifiableMap";
   public static final String OUT_DIR = "resources/cnnCurrentTrainingModels";
   public static final String TRAINED_MODEL_FILE = "resources/cnnTrainedModels/bestModel.bin";
   public static final String INPUT_IMAGE_PATH = "resources/train-images.idx3-ubyte";
