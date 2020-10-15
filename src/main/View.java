@@ -36,9 +36,9 @@ import com.mortennobel.imagescaling.ResampleOp;
 
 public class View implements ViewPlan {
 	private final static Logger LOGGER = LoggerFactory.getLogger(View.class);
-	
-	private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 628;
+
+	//private static final int FRAME_WIDTH = 1200;
+    //private static final int FRAME_HEIGHT = 628;
     private final NeuralNetwork neuralNetwork = new NeuralNetwork();
     private final ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
 
@@ -57,13 +57,13 @@ public class View implements ViewPlan {
     private JPanel resultPanel;
     private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
     private JComboBox algoList;
-    private String[] algorithms = {"Convolutional Neural Network", 
-	"Neural Network"};
+    //private String[] algorithms = {"Convolutional Neural Network", 
+	//"Neural Network"};
 
-    private static String cnnAlgo = "Convolutional Neural Network";
-    private static String nnAlgo = "Neural Network";
-    private static String selectedAlgo = "";
-    
+    //private static String cnnAlgo = "Convolutional Neural Network";
+    //private static String nnAlgo = "Neural Network";
+    //private static String selectedAlgo = "";
+
     public View() throws Exception {
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
@@ -73,7 +73,7 @@ public class View implements ViewPlan {
         convolutionalNeuralNetwork.init();
         createPanels();
     }
-    
+
     private void createPanels() {
     	mainFrame = createMainFrame();
 
@@ -81,7 +81,7 @@ public class View implements ViewPlan {
         mainPanel.setLayout(new BorderLayout());
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
     }
-    
+
     @Override
     public void addDrawAreaAndPredictionArea() {
 
@@ -98,26 +98,26 @@ public class View implements ViewPlan {
         drawAndDigitPredictionPanel.add(resultPanel);
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
     }
-    
+
     @Override
     public void addTopPanel() {
     	JPanel topPanel = new JPanel(new FlowLayout());
-        
-        algoList = new JComboBox(algorithms);
-        
-        algoList.addActionListener(new ActionListener() { 
+
+        algoList = new JComboBox(consts.algorithms);
+
+        algoList.addActionListener(new ActionListener() {
     	    public void actionPerformed(ActionEvent e) {
     	    	resultPanel.removeAll();
                 drawArea.repaint();
                 drawAndDigitPredictionPanel.updateUI();
     	    }
         });
-        
+
         JButton runAlgo = new JButton("Run");
-        
+
         runAlgo.addActionListener(e -> {
-        	selectedAlgo = (String) (algoList).getSelectedItem();
-        	if (selectedAlgo.equals(cnnAlgo)) {
+        	consts.selectedAlgo = (String) (algoList).getSelectedItem();
+        	if (consts.selectedAlgo.equals(consts.cnnAlgo)) {
         		Image drawImage = drawArea.getImage();
                 BufferedImage sbi = toBufferedImage(drawImage);
                 Image scaled = scale(sbi);
@@ -131,7 +131,7 @@ public class View implements ViewPlan {
                 resultPanel.removeAll();
                 resultPanel.add(predictNumber);
                 resultPanel.updateUI();
-        	} else if  (selectedAlgo.equals(nnAlgo)) {
+        	} else if  (consts.selectedAlgo.equals(consts.nnAlgo)) {
         		Image drawImage = drawArea.getImage();
                 BufferedImage sbi = toBufferedImage(drawImage);
                 Image scaled = scale(sbi);
@@ -147,7 +147,7 @@ public class View implements ViewPlan {
                 resultPanel.updateUI();
         	}
         });
-        
+
         JButton clear = new JButton("Clear");
         clear.addActionListener(e -> {
         	resultPanel.removeAll();
@@ -203,13 +203,13 @@ public class View implements ViewPlan {
         }
         return imageGray;
     }
-    
+
     @Override
     public JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Digit Recognizer");
         mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        mainFrame.setSize(consts.FRAME_WIDTH, consts.FRAME_HEIGHT);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
