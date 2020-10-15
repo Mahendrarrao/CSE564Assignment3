@@ -15,7 +15,7 @@ import javax.swing.border.TitledBorder;
  */
 public class DrawArea extends JComponent {
 
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
+    private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
     // Image in which we're going to draw
     private Image image;
     // Graphics2D object ==> used to draw on
