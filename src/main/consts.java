@@ -8,7 +8,7 @@ public final class consts {
   public static String nnAlgo = "Neural Network";
   public static String selectedAlgo = "";
 
-  private Consts(){
+  private consts(){
     //this prevents even the native class from
     //calling this ctor as well :
     throw new AssertionError();
