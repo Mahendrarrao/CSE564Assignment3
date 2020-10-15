@@ -55,9 +55,9 @@ public class View implements ViewPlan {
 	private JPanel mainPanel;
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
+    private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
     private JComboBox algoList;
-    //private String[] algorithms = {"Convolutional Neural Network", 
+    //private String[] algorithms = {"Convolutional Neural Network",
 	//"Neural Network"};
 
     //private static String cnnAlgo = "Convolutional Neural Network";
@@ -66,9 +66,9 @@ public class View implements ViewPlan {
 
     public View() throws Exception {
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
-        UIManager.put("ComboBox.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
-        UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
+        UIManager.put(consts.buttonFont, new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
+        UIManager.put(consts.comboxFont, new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
+        UIManager.put("ProgressBar.font", new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
         neuralNetwork.init();
         convolutionalNeuralNetwork.init();
         createPanels();
@@ -127,7 +127,7 @@ public class View implements ViewPlan {
                 LabeledImage predict = neuralNetwork.predict(labeledImage,0);
                 JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
                 predictNumber.setForeground(Color.RED);
-                predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
+                predictNumber.setFont(new Font(consts.fontType, Font.BOLD, 128));
                 resultPanel.removeAll();
                 resultPanel.add(predictNumber);
                 resultPanel.updateUI();
@@ -141,7 +141,7 @@ public class View implements ViewPlan {
                 int predict = convolutionalNeuralNetwork.predict(labeledImage);
                 JLabel predictNumber = new JLabel("" + predict);
                 predictNumber.setForeground(Color.RED);
-                predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
+                predictNumber.setFont(new Font(consts.fontType, Font.BOLD, 128));
                 resultPanel.removeAll();
                 resultPanel.add(predictNumber);
                 resultPanel.updateUI();

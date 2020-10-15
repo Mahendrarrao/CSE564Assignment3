@@ -21,7 +21,7 @@ public class Run {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Run.class);
     private static JFrame mainFrame = new JFrame();
-    
+
     public static void main(String[] args) throws Exception{
     	LOGGER.info("Application is starting ... ");
     	setHadoopHomeEnvironmentVariable();
@@ -30,20 +30,20 @@ public class Run {
     	UIBuilder builder = new NewUIBuilder();
     	UIDirector director = new UIDirector(builder);
     	Executors.newCachedThreadPool().submit(()->{ try {
-    		
+
     	director.makeUI();
-    	} 
+    	}
     	finally { progressBar.setVisible(false); mainFrame.dispose();
     	} });
-    	
-    	
+
+
     }
 
 	/*
 	 * public static void main(String[] args) throws Exception {
-	 * 
+	 *
 	 * LOGGER.info("Application is starting ... ");
-	 * 
+	 *
 	 * setHadoopHomeEnvironmentVariable(); ProgressBar progressBar = new
 	 * ProgressBar(mainFrame, true);
 	 * progressBar.showProgressBar("Collecting data this make take several seconds!"
@@ -54,7 +54,7 @@ public class Run {
 
 //    private static void setHadoopHomeEnvironmentVariable() throws Exception {
 //        HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
-//        hadoopEnvSetUp.put("HADOOP_HOME", new File("resources/winutils-master/hadoop-2.8.1").getAbsolutePath());
+//        hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
 //        Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
 //        Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
 //        theEnvironmentField.setAccessible(true);
@@ -67,10 +67,10 @@ public class Run {
 //        cienv.clear();
 //        cienv.putAll(hadoopEnvSetUp);
 //    }
-    
+
     private static void setHadoopHomeEnvironmentVariable() throws Exception {
     	HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
-    	hadoopEnvSetUp.put("HADOOP_HOME", new File("resources/winutils-master/hadoop-2.8.1").getAbsolutePath());
+    	hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
     	try {
     		Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
     		Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
@@ -99,5 +99,5 @@ public class Run {
     		}
     	}
     }
-    
+
 }
