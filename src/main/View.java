@@ -51,8 +51,7 @@ public class View implements ViewPlan {
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
     private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
-    @SuppressWarnings("rawtypes")
-	private JComboBox algoList;
+    private JComboBox<String> algoList;
     
     public View() throws Exception {
     	init();
@@ -90,11 +89,10 @@ public class View implements ViewPlan {
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addTopPanel() {
     	JPanel topPanel = new JPanel(new FlowLayout());
         
-        algoList = new JComboBox(consts.algorithms);
+        algoList = new JComboBox<>(consts.algorithms);
         
         algoList.addActionListener(new ActionListener() { 
     	    public void actionPerformed(ActionEvent e) {

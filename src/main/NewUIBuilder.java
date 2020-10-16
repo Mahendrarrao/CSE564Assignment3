@@ -10,16 +10,12 @@ public class NewUIBuilder implements UIBuilder
 
 	@Override
 	public void buildDrawAndPredictionArea() {
-		
 		view.addDrawAreaAndPredictionArea();
-		
 	}
 
 	@Override
 	public void buildTopPanel() {
-		
 		view.addTopPanel();
-		
 	}
 
 	@Override
@@ -31,5 +27,4 @@ public class NewUIBuilder implements UIBuilder
 	public View getView() {
 		return view;
 	}
-
 }
