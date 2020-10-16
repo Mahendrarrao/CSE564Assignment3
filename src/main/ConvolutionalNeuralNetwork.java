@@ -112,7 +112,7 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
                 .scoreCalculator(new AccuracyCalculator(
                         new MnistDataSetIterator(testDataSize, testDataSize, false, false, true, 12345)))
                 .evaluateEveryNEpochs(1)
-                .modelSaver(new LocalFileModelSaver(consts.consts.OUT_DIR))
+                .modelSaver(new LocalFileModelSaver(consts.OUT_DIR))
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, mnistTrain);
