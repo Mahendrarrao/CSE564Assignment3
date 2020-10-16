@@ -29,31 +29,34 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by agibsonccc on 9/16/15.
- */
 public class ConvolutionalNeuralNetwork extends StrategyNetwork{
 
     private static final Logger LOG = LoggerFactory.getLogger(ConvolutionalNeuralNetwork.class);
     private MultiLayerNetwork preTrainedModel;
 
-    @Override
-    public void init() throws IOException {
-        preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(consts.TRAINED_MODEL_FILE));
+    public ConvolutionalNeuralNetwork(){
+    	try {
+    		preTrainedModel = ModelSerializer.restoreMultiLayerNetwork(new File(consts.TRAINED_MODEL_FILE));
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     @Override
-    public int predict(LabeledImage labeledImage) {
+    public LabeledImage predict(LabeledImage labeledImage) {
         double[] pixels = labeledImage.getPixels();
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = pixels[i] / 255d;
         }
         int[] predict = preTrainedModel.predict(Nd4j.create(pixels));
 
-        return predict[0];
+        labeledImage.setLabel(predict[0]);
+        return labeledImage;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void train(Integer trainDataSize, Integer testDataSize) throws IOException {
         int nChannels = 1; // Number of input channels
         int outputNum = 10; // The number of possible outcomes
@@ -106,7 +109,8 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
                 .setInputType(InputType.convolutionalFlat(28, 28, 1))
                 .backprop(true).pretrain(false).build();
 
-        EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
+        @SuppressWarnings("rawtypes")
+		EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
                 .epochTerminationConditions(new MaxEpochsTerminationCondition(nEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(75, TimeUnit.MINUTES))
                 .scoreCalculator(new AccuracyCalculator(
@@ -117,7 +121,8 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, mnistTrain);
 
-        EarlyStoppingResult result = trainer.fit();
+        @SuppressWarnings("rawtypes")
+		EarlyStoppingResult result = trainer.fit();
 
         LOG.info("Termination reason: " + result.getTerminationReason());
         LOG.info("Termination details: " + result.getTerminationDetails());
@@ -126,10 +131,6 @@ public class ConvolutionalNeuralNetwork extends StrategyNetwork{
         LOG.info("Score at best epoch: " + result.getBestModelScore());
     }
 
-    @Override
-    public LabeledImage predict(LabeledImage labeledImage, int dummy){
-      return labeledImage;
-    }
 
     public static void main(String[] args) throws Exception {
         new ConvolutionalNeuralNetwork().train(60000, 1000);

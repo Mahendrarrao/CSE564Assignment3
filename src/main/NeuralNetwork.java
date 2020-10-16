@@ -19,8 +19,7 @@ public class NeuralNetwork extends StrategyNetwork {
     private SparkSession sparkSession;
     private MultilayerPerceptronClassificationModel model;
 
-    @Override
-    public void init() {
+    public NeuralNetwork() {
         initSparkSession();
         if (model == null) {
             LOGGER.info("Loading the Neural Network from saved model ... ");
@@ -74,14 +73,10 @@ public class NeuralNetwork extends StrategyNetwork {
     }
 
     @Override
-    public LabeledImage predict(LabeledImage labeledImage, int dummy) {
+    public LabeledImage predict(LabeledImage labeledImage) {
         double predict = model.predict(labeledImage.getFeatures());
         labeledImage.setLabel(predict);
         return labeledImage;
     }
-	@Override
-	public int predict(LabeledImage labeledImage) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 }

@@ -9,13 +9,9 @@ import java.util.List;
 
 public class IdxReader {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IdxReader.class);
-
-    /**
-     * @param size
-     * @return
-     */
-    public static List<LabeledImage> loadData(final int size) {
+	private final static Logger LOGGER = LoggerFactory.getLogger(IdxReader.class);
+	
+	public static List<LabeledImage> loadData(final int size) {
         return getLabeledImages(consts.INPUT_IMAGE_PATH, consts.INPUT_LABEL_PATH, size);
     }
 

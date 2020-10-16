@@ -5,9 +5,7 @@ import org.apache.spark.ml.linalg.Vectors;
 
 import java.io.Serializable;
 
-/**
- * Created by klevis.ramo on 11/27/2017.
- */
+@SuppressWarnings("serial")
 public class LabeledImage implements Serializable {
     private final double[] meanNormalizedPixel;
     private final double[] pixels;

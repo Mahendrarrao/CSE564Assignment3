@@ -8,11 +8,7 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-/**
- * Component for drawing !
- *
- * @author sylsau
- */
+@SuppressWarnings("serial")
 public class DrawArea extends JComponent {
 
     private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);

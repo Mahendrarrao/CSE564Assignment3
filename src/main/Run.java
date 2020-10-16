@@ -1,27 +1,20 @@
 package main;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import main.ProgressBar;
-
-
 import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by klevis.ramo on 11/24/2017.
- */
 public class Run {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Run.class);
     private static JFrame mainFrame = new JFrame();
-
+    
     public static void main(String[] args) throws Exception{
     	LOGGER.info("Application is starting ... ");
     	setHadoopHomeEnvironmentVariable();
@@ -29,6 +22,7 @@ public class Run {
     	progressBar.showProgressBar("Collecting data this make take several seconds!");
     	UIBuilder builder = new NewUIBuilder();
     	UIDirector director = new UIDirector(builder);
+<<<<<<< Updated upstream
     	Executors.newCachedThreadPool().submit(()->{ try {
 
     	director.makeUI();
@@ -69,6 +63,17 @@ public class Run {
 //    }
 
     private static void setHadoopHomeEnvironmentVariable() throws Exception {
+=======
+    	Executors.newCachedThreadPool().submit(()->{ try {    		
+    		director.makeUI();
+    	} 
+    	finally { mainFrame.dispose();
+    	} });
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void setHadoopHomeEnvironmentVariable() throws Exception {
+>>>>>>> Stashed changes
     	HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
     	hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
     	try {
@@ -99,5 +104,4 @@ public class Run {
     		}
     	}
     }
-
 }

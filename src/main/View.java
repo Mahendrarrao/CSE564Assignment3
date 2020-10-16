@@ -13,8 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -35,13 +33,10 @@ import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;
 
 public class View implements ViewPlan {
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = LoggerFactory.getLogger(View.class);
-
-	//private static final int FRAME_WIDTH = 1200;
-    //private static final int FRAME_HEIGHT = 628;
-    private final NeuralNetwork neuralNetwork = new NeuralNetwork();
-    private final ConvolutionalNeuralNetwork convolutionalNeuralNetwork = new ConvolutionalNeuralNetwork();
-
+	
+    private StrategyContext strategyContext = new StrategyContext();
     private DrawArea drawArea;
     private JFrame mainFrame;
     public JFrame getMainFrame() {
@@ -56,6 +51,7 @@ public class View implements ViewPlan {
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
     private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
+<<<<<<< Updated upstream
     private JComboBox algoList;
     //private String[] algorithms = {"Convolutional Neural Network",
 	//"Neural Network"};
@@ -64,16 +60,22 @@ public class View implements ViewPlan {
     //private static String nnAlgo = "Neural Network";
     //private static String selectedAlgo = "";
 
+=======
+    @SuppressWarnings("rawtypes")
+	private JComboBox algoList;
+    
+>>>>>>> Stashed changes
     public View() throws Exception {
+    	init();
+        createPanels();
+    }
+    
+    public void init() throws Exception {
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put(consts.buttonFont, new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
         UIManager.put(consts.comboxFont, new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
-        UIManager.put("ProgressBar.font", new FontUIResource(new Font(consts.dialog, Font.BOLD, 18)));
-        neuralNetwork.init();
-        convolutionalNeuralNetwork.init();
-        createPanels();
     }
-
+    
     private void createPanels() {
     	mainFrame = createMainFrame();
 
@@ -81,7 +83,7 @@ public class View implements ViewPlan {
         mainPanel.setLayout(new BorderLayout());
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
     }
-
+    
     @Override
     public void addDrawAreaAndPredictionArea() {
 
@@ -98,56 +100,35 @@ public class View implements ViewPlan {
         drawAndDigitPredictionPanel.add(resultPanel);
         mainPanel.add(drawAndDigitPredictionPanel, BorderLayout.CENTER);
     }
-
-    @Override
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addTopPanel() {
     	JPanel topPanel = new JPanel(new FlowLayout());
-
+        
         algoList = new JComboBox(consts.algorithms);
-
-        algoList.addActionListener(new ActionListener() {
+        
+        algoList.addActionListener(new ActionListener() { 
     	    public void actionPerformed(ActionEvent e) {
     	    	resultPanel.removeAll();
                 drawArea.repaint();
                 drawAndDigitPredictionPanel.updateUI();
     	    }
         });
-
+        
         JButton runAlgo = new JButton("Run");
-
+        
         runAlgo.addActionListener(e -> {
         	consts.selectedAlgo = (String) (algoList).getSelectedItem();
-        	if (consts.selectedAlgo.equals(consts.cnnAlgo)) {
-        		Image drawImage = drawArea.getImage();
-                BufferedImage sbi = toBufferedImage(drawImage);
-                Image scaled = scale(sbi);
-                BufferedImage scaledBuffered = toBufferedImage(scaled);
-                double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
-                LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
-                LabeledImage predict = neuralNetwork.predict(labeledImage,0);
-                JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
-                predictNumber.setForeground(Color.RED);
-                predictNumber.setFont(new Font(consts.fontType, Font.BOLD, 128));
-                resultPanel.removeAll();
-                resultPanel.add(predictNumber);
-                resultPanel.updateUI();
-        	} else if  (consts.selectedAlgo.equals(consts.nnAlgo)) {
-        		Image drawImage = drawArea.getImage();
-                BufferedImage sbi = toBufferedImage(drawImage);
-                Image scaled = scale(sbi);
-                BufferedImage scaledBuffered = toBufferedImage(scaled);
-                double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
-                LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
-                int predict = convolutionalNeuralNetwork.predict(labeledImage);
-                JLabel predictNumber = new JLabel("" + predict);
-                predictNumber.setForeground(Color.RED);
-                predictNumber.setFont(new Font(consts.fontType, Font.BOLD, 128));
-                resultPanel.removeAll();
-                resultPanel.add(predictNumber);
-                resultPanel.updateUI();
-        	}
+        	strategyContext.decideStrategy(consts.selectedAlgo);
+        	putResult();
+			/*
+			 * if (selectedAlgo.equals(cnnAlgo)) {
+			 * strategyContext.setStrategy(convolutionalNeuralNetwork); putResult(); } else
+			 * if (selectedAlgo.equals(nnAlgo)) {
+			 * strategyContext.setStrategy(neuralNetwork); putResult(); }
+			 */
         });
-
+        
         JButton clear = new JButton("Clear");
         clear.addActionListener(e -> {
         	resultPanel.removeAll();
@@ -163,6 +144,25 @@ public class View implements ViewPlan {
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
+    
+    private void putResult() {
+    	Image drawImage = drawArea.getImage();
+        BufferedImage sbi = toBufferedImage(drawImage);
+        Image scaled = scale(sbi);
+        BufferedImage scaledBuffered = toBufferedImage(scaled);
+        double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
+        LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
+        LabeledImage predict = strategyContext.predictInStrategy(labeledImage);
+        JLabel predictNumber = new JLabel("" + (int) predict.getLabel());
+        predictNumber.setForeground(Color.RED);
+        predictNumber.setFont(new Font("SansSerif", Font.BOLD, 128));
+        resultPanel.removeAll();
+        resultPanel.add(predictNumber);
+        resultPanel.updateUI();
+    	
+    }
+    
+    
     private static BufferedImage scale(BufferedImage imageToScale) {
         ResampleOp resizeOp = new ResampleOp(28, 28);
         resizeOp.setFilter(ResampleFilters.getLanczos3Filter());
@@ -203,7 +203,7 @@ public class View implements ViewPlan {
         }
         return imageGray;
     }
-
+    
     @Override
     public JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
