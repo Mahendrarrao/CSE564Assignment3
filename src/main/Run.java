@@ -25,48 +25,16 @@ public class Run {
     public static void main(String[] args) throws Exception{
     	LOGGER.info("Application is starting ... ");
     	setHadoopHomeEnvironmentVariable();
-    	ProgressBar progressBar = new ProgressBar(mainFrame, true);
-    	progressBar.showProgressBar("Collecting data this make take several seconds!");
     	UIBuilder builder = new NewUIBuilder();
     	UIDirector director = new UIDirector(builder);
     	Executors.newCachedThreadPool().submit(()->{ try {
 
     	director.makeUI();
     	}
-    	finally { progressBar.setVisible(false); mainFrame.dispose();
-    	} });
+ });
 
 
     }
-
-	/*
-	 * public static void main(String[] args) throws Exception {
-	 *
-	 * LOGGER.info("Application is starting ... ");
-	 *
-	 * setHadoopHomeEnvironmentVariable(); ProgressBar progressBar = new
-	 * ProgressBar(mainFrame, true);
-	 * progressBar.showProgressBar("Collecting data this make take several seconds!"
-	 * ); UI ui = new UI(); Executors.newCachedThreadPool().submit(()->{ try {
-	 * ui.initUI(); } finally { progressBar.setVisible(false); mainFrame.dispose();
-	 * } }); }
-	 */
-
-//    private static void setHadoopHomeEnvironmentVariable() throws Exception {
-//        HashMap<String, String> hadoopEnvSetUp = new HashMap<>();
-//        hadoopEnvSetUp.put(consts.hadoopHome, new File(consts.filePath).getAbsolutePath());
-//        Class<?> processEnvironmentClass = Class.forName(consts.javaPath);
-//        Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-//        theEnvironmentField.setAccessible(true);
-//        Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-//        env.clear();
-//        env.putAll(hadoopEnvSetUp);
-//        Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
-//        theCaseInsensitiveEnvironmentField.setAccessible(true);
-//        Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-//        cienv.clear();
-//        cienv.putAll(hadoopEnvSetUp);
-//    }
 
     private static void setHadoopHomeEnvironmentVariable() throws Exception {
     	HashMap<String, String> hadoopEnvSetUp = new HashMap<>();

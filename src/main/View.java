@@ -57,12 +57,6 @@ public class View implements ViewPlan {
     private JPanel resultPanel;
     private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
     private JComboBox algoList;
-    //private String[] algorithms = {"Convolutional Neural Network",
-	//"Neural Network"};
-
-    //private static String cnnAlgo = "Convolutional Neural Network";
-    //private static String nnAlgo = "Neural Network";
-    //private static String selectedAlgo = "";
 
     public View() throws Exception {
     	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
