@@ -51,20 +51,9 @@ public class View implements ViewPlan {
     private JPanel drawAndDigitPredictionPanel;
     private JPanel resultPanel;
     private final Font sansSerifBold = new Font(consts.fontType, Font.BOLD, 18);
-<<<<<<< Updated upstream
-    private JComboBox algoList;
-    //private String[] algorithms = {"Convolutional Neural Network",
-	//"Neural Network"};
-
-    //private static String cnnAlgo = "Convolutional Neural Network";
-    //private static String nnAlgo = "Neural Network";
-    //private static String selectedAlgo = "";
-
-=======
     @SuppressWarnings("rawtypes")
 	private JComboBox algoList;
     
->>>>>>> Stashed changes
     public View() throws Exception {
     	init();
         createPanels();
